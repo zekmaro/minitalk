@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy.c                                        :+:      :+:    :+:   */
+/*   ft_lstadd_front_bonus.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anarama <anarama@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/19 10:14:32 by anarama           #+#    #+#             */
-/*   Updated: 2024/05/23 21:24:03 by anarama          ###   ########.fr       */
+/*   Created: 2024/04/07 20:15:53 by anarama           #+#    #+#             */
+/*   Updated: 2024/04/15 11:46:10 by anarama          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "libft.h"
 
-void	*ft_memcpy_prf(void *dest, const void *src, size_t n)
+void	ft_lstadd_front(t_list **lst, t_list *new)
 {
-	char	*temp_dest;
-	char	*temp_src;
-
-	if (dest == NULL && src == NULL)
-		return (NULL);
-	temp_dest = (char *)dest;
-	temp_src = (char *)src;
-	while (n--)
-		*temp_dest++ = *temp_src++;
-	return (dest);
+	if (new == NULL)
+		return ;
+	if (*lst == NULL)
+	{
+		*lst = new;
+		return ;
+	}
+	new->next = *lst;
+	*lst = new;
 }

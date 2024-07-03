@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy.c                                        :+:      :+:    :+:   */
+/*   ft_lstsize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anarama <anarama@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/19 10:14:32 by anarama           #+#    #+#             */
-/*   Updated: 2024/05/23 21:24:03 by anarama          ###   ########.fr       */
+/*   Created: 2024/04/08 10:57:57 by anarama           #+#    #+#             */
+/*   Updated: 2024/04/08 11:05:17 by anarama          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "libft.h"
 
-void	*ft_memcpy_prf(void *dest, const void *src, size_t n)
+int	ft_lstsize(t_list *lst)
 {
-	char	*temp_dest;
-	char	*temp_src;
+	int	size_lst;
 
-	if (dest == NULL && src == NULL)
-		return (NULL);
-	temp_dest = (char *)dest;
-	temp_src = (char *)src;
-	while (n--)
-		*temp_dest++ = *temp_src++;
-	return (dest);
+	if (lst == NULL)
+		return (0);
+	size_lst = 0;
+	while (lst != NULL)
+	{
+		lst = lst->next;
+		size_lst++;
+	}
+	return (size_lst);
 }

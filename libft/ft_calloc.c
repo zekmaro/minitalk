@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy.c                                        :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anarama <anarama@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/19 10:14:32 by anarama           #+#    #+#             */
-/*   Updated: 2024/05/23 21:24:03 by anarama          ###   ########.fr       */
+/*   Created: 2024/04/04 10:24:35 by anarama           #+#    #+#             */
+/*   Updated: 2024/04/15 11:57:58 by anarama          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "libft.h"
 
-void	*ft_memcpy_prf(void *dest, const void *src, size_t n)
+void	*ft_calloc(size_t num, size_t size)
 {
-	char	*temp_dest;
-	char	*temp_src;
+	char	*mem;
+	size_t	total_size;
 
-	if (dest == NULL && src == NULL)
+	total_size = size * num;
+	if (num == 0 || size == 0)
+		total_size = 0;
+	else if (SIZE_MAX / num < size)
 		return (NULL);
-	temp_dest = (char *)dest;
-	temp_src = (char *)src;
-	while (n--)
-		*temp_dest++ = *temp_src++;
-	return (dest);
+	mem = (char *)malloc(total_size);
+	if (!mem)
+		return (NULL);
+	return (ft_memset(mem, 0, total_size));
 }

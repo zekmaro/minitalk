@@ -5,17 +5,17 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: anarama <anarama@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/19 10:14:32 by anarama           #+#    #+#             */
-/*   Updated: 2024/05/23 21:24:03 by anarama          ###   ########.fr       */
+/*   Created: 2024/04/02 17:45:29 by anarama           #+#    #+#             */
+/*   Updated: 2024/04/09 11:44:30 by anarama          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "libft.h"
 
-void	*ft_memcpy_prf(void *dest, const void *src, size_t n)
+void	*ft_memcpy(void *dest, const void *src, size_t n)
 {
-	char	*temp_dest;
-	char	*temp_src;
+	char		*temp_dest;
+	char		*temp_src;
 
 	if (dest == NULL && src == NULL)
 		return (NULL);

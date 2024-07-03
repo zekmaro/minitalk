@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy.c                                        :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anarama <anarama@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/19 10:14:32 by anarama           #+#    #+#             */
-/*   Updated: 2024/05/23 21:24:03 by anarama          ###   ########.fr       */
+/*   Created: 2024/04/03 15:49:58 by anarama           #+#    #+#             */
+/*   Updated: 2024/04/07 19:26:47 by anarama          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "libft.h"
 
-void	*ft_memcpy_prf(void *dest, const void *src, size_t n)
+void	*ft_memchr(const void *str, int c, size_t n)
 {
-	char	*temp_dest;
-	char	*temp_src;
+	unsigned char	unsigned_c;
+	unsigned char	*unsigned_str;
 
-	if (dest == NULL && src == NULL)
+	unsigned_str = (unsigned char *)str;
+	unsigned_c = (unsigned char)c;
+	if (n == 0)
 		return (NULL);
-	temp_dest = (char *)dest;
-	temp_src = (char *)src;
 	while (n--)
-		*temp_dest++ = *temp_src++;
-	return (dest);
+	{
+		if (*unsigned_str == unsigned_c)
+			return ((void *)unsigned_str);
+		unsigned_str++;
+	}
+	return (NULL);
 }

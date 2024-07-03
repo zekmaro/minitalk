@@ -6,7 +6,7 @@
 /*   By: anarama <anarama@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 11:17:12 by anarama           #+#    #+#             */
-/*   Updated: 2024/04/22 12:23:26 by anarama          ###   ########.fr       */
+/*   Updated: 2024/05/23 21:27:00 by anarama          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,16 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdint.h>
-# include <stdio.h>
 
-char	*ft_strchr(char *str, char c);
-void	ft_putchar_fd(char c, int fd, int *counter);
-void	ft_putstr_fd(char *s, int fd, int *counter);
-int		ft_printf(const char *str, ...);
+char	*ft_strchr_prf(char *str, char c);
+void	ft_putchar_fd_prf(char c, int fd, int *counter);
+void	ft_putstr_fd_prf(char *s, int fd, int *counter);
 void	ft_putnbr_fd_dec(int n, int fd, int *counter);
 void	ft_putnbr_fd_hex_lower(size_t n, int fd, int *counter);
 void	ft_putnbr_fd_hex_upper(size_t n, int fd, int *counter);
 void	ft_putnbr_fd_uns(size_t n, int fd, int *counter);
-void	*ft_memcpy(void *dest, const void *src, size_t n);
+void	*ft_memcpy_prf(void *dest, const void *src, size_t n);
 void	ft_putnbr_fd_ptr(ssize_t n, int fd, int *counter, int flag);
+int		ft_printf(const char *str, ...);
 
 #endif

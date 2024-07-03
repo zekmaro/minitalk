@@ -1,27 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy.c                                        :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anarama <anarama@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/19 10:14:32 by anarama           #+#    #+#             */
-/*   Updated: 2024/05/23 21:24:03 by anarama          ###   ########.fr       */
+/*   Created: 2024/04/02 16:07:49 by anarama           #+#    #+#             */
+/*   Updated: 2024/04/04 11:28:40 by anarama          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "libft.h"
 
-void	*ft_memcpy_prf(void *dest, const void *src, size_t n)
+void	ft_bzero(void *s, size_t n)
 {
-	char	*temp_dest;
-	char	*temp_src;
+	char	*temp_s;
 
-	if (dest == NULL && src == NULL)
-		return (NULL);
-	temp_dest = (char *)dest;
-	temp_src = (char *)src;
+	temp_s = (char *)s;
 	while (n--)
-		*temp_dest++ = *temp_src++;
-	return (dest);
+		*temp_s++ = 0;
 }
