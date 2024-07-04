@@ -28,7 +28,7 @@ clean	:
 fclean	:
 	make -C ft_printf fclean
 	make -C libft fclean
-	rm -f $(OBJ_1) $(OBJ_2) $(NAME_1) $(NAME_1)
+	rm -f $(OBJ_1) $(OBJ_2) $(NAME_1) $(NAME_2)
 
 re		: fclean all
 
