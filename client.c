@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anarama <anarama@student.42.fr>            +#+  +:+       +#+        */
+/*   By: andrejarama <andrejarama@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 20:28:26 by andrejarama       #+#    #+#             */
-/*   Updated: 2024/07/04 16:03:11 by anarama          ###   ########.fr       */
+/*   Updated: 2024/07/04 23:17:20 by andrejarama      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,32 @@
 
 static volatile sig_atomic_t got_sig_back = 0;
 
-void	send_str_len(int len)
-{
-	
-}
-
 void	handle_signal(int sig)
 {
 	if (sig == SIGUSR1)
 		got_sig_back = 1;
 }
 
-void	send_bit(char c, pid_t server_pid)
+void	send_len(char c, pid_t server_pid)
+{
+	int	i;
+
+	i = 0;
+	while (i < 32)
+	{
+		if (c & (1 << i))
+			kill(server_pid, SIGUSR1);
+		else
+			kill(server_pid, SIGUSR2);
+		i++;
+		usleep(100);
+		while (!got_sig_back)
+			pause();
+		got_sig_back = 0;
+	}
+}
+
+void	send_byte(char c, pid_t server_pid)
 {
 	int	i;
 
@@ -36,10 +50,11 @@ void	send_bit(char c, pid_t server_pid)
 			kill(server_pid, SIGUSR1);
 		else
 			kill(server_pid, SIGUSR2);
-		i--;
+		i++;
 		usleep(100);
 		while (!got_sig_back)
 			pause();
+		got_sig_back = 0;
 	}
 }
 
@@ -50,7 +65,8 @@ void	send_bit_str(char *str, pid_t server_pid)
 	i = 0;
 	while (i < ft_strlen(str))
 	{
-		send_bit(str[i], server_pid);
+		ft_printf("%c\n", str[i]);
+		send_byte(str[i], server_pid);
 		i++;
 	}
 }
@@ -74,6 +90,7 @@ int	main(int argc, char **argv)
 		free(pid_string);
 		exit(EXIT_FAILURE);
 	}
+	send_len(ft_strlen(argv[2]), server_pid);
 	send_bit_str(argv[2], server_pid);
 	free(pid_string);
 }
