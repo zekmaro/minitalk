@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andrejarama <andrejarama@student.42.fr>    +#+  +:+       +#+        */
+/*   By: anarama <anarama@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 20:28:26 by andrejarama       #+#    #+#             */
-/*   Updated: 2024/07/04 23:17:20 by andrejarama      ###   ########.fr       */
+/*   Updated: 2024/07/05 14:56:23 by anarama          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	send_len(char c, pid_t server_pid)
 			kill(server_pid, SIGUSR1);
 		else
 			kill(server_pid, SIGUSR2);
+		//ft_printf("Sent signal # %d\n", i);
 		i++;
 		usleep(100);
 		while (!got_sig_back)
@@ -47,9 +48,15 @@ void	send_byte(char c, pid_t server_pid)
 	while (i < 8)
 	{
 		if (c & (1 << i))
+		{
 			kill(server_pid, SIGUSR1);
+			//ft_printf("bit_count %d and the bit 1\n", i);
+		}
 		else
+		{
 			kill(server_pid, SIGUSR2);
+			//ft_printf("bit_count %d and the bit 0\n", i);
+		}
 		i++;
 		usleep(100);
 		while (!got_sig_back)
@@ -65,7 +72,6 @@ void	send_bit_str(char *str, pid_t server_pid)
 	i = 0;
 	while (i < ft_strlen(str))
 	{
-		ft_printf("%c\n", str[i]);
 		send_byte(str[i], server_pid);
 		i++;
 	}
