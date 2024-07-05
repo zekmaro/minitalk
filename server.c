@@ -6,7 +6,7 @@
 /*   By: anarama <anarama@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 15:16:37 by anarama           #+#    #+#             */
-/*   Updated: 2024/07/05 15:16:13 by anarama          ###   ########.fr       */
+/*   Updated: 2024/07/05 16:15:32 by anarama          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,6 @@ void	print_minitalk()
 	ft_printf("██║╚██╔╝██║██║██║╚████║██║░░░██║░░░██╔══██║██║░░░░░██╔═██╗░\n");
 	ft_printf("██║░╚═╝░██║██║██║░╚███║██║░░░██║░░░██║░░██║███████╗██║░╚██╗\n");
 	ft_printf("╚═╝░░░░░╚═╝╚═╝╚═╝░░╚══╝╚═╝░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚═╝░░╚═╝\n");
-}
-
-void	add_char_to_str(char *str)
-{
-	if (str != NULL)
-	{
-		str = ft_calloc(2, sizeof(char));
-		if (!str)
-		{
-			exit(EXIT_FAILURE);
-		}
-	}
-	
 }
 
 void	handle_signal(int sig, siginfo_t *info, void *context)
@@ -73,28 +60,32 @@ void	handle_signal(int sig, siginfo_t *info, void *context)
 		if (sig == SIGUSR1)
 		{
 			current_char |= (1 << bit_count);
+			ft_printf("%d 1\n", bit_count);
+		}
+		else {
+			ft_printf("%d 0\n", bit_count);
 		}
 		usleep(100);
 		kill(info->si_pid, SIGUSR1);
 		if (bit_count == 7)
 		{
 			bit_count = 0;
-			ft_printf("current_char %c\n", current_char);
-			//str[char_index] = current_char;
+			str[char_index] = current_char;
 			current_char = 0;
 			char_index++;
+			ft_printf("\n");
 		}
 		else
 			bit_count++;
-		// if (char_index == str_len)
-		// {
-		// 	ft_printf("%s\n", str);
-		// 	free(str);
-		// 	str = NULL;
-		// 	char_index = 0;
-		// 	str_len = 0;
-		// 	got_len_str = 0;
-		// }
+		if (char_index == str_len)
+		{
+			ft_printf("%s\n", str);
+			free(str);
+			str = NULL;
+			char_index = 0;
+			str_len = 0;
+			got_len_str = 0;
+		}
 	}
 }
 
