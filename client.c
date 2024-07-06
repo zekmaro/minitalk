@@ -6,36 +6,42 @@
 /*   By: anarama <anarama@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 20:28:26 by andrejarama       #+#    #+#             */
-/*   Updated: 2024/07/05 15:47:51 by anarama          ###   ########.fr       */
+/*   Updated: 2024/07/06 14:53:11 by anarama          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-static volatile sig_atomic_t got_sig_back = 0;
+static volatile sig_atomic_t	g_got_sig_back = 0;
 
 void	handle_signal(int sig)
 {
 	if (sig == SIGUSR1)
-		got_sig_back = 1;
+		g_got_sig_back = 1;
 }
 
-void	send_len(char c, pid_t server_pid)
+void	send_len(unsigned int len, pid_t server_pid)
 {
 	int	i;
 
 	i = 0;
 	while (i < 32)
 	{
-		if (c & (1 << i))
-			kill(server_pid, SIGUSR1);
+		if (len & (1U << i))
+		{
+			if (kill(server_pid, SIGUSR1) == -1)
+				exit(EXIT_FAILURE);
+		}
 		else
-			kill(server_pid, SIGUSR2);
+		{
+			if (kill(server_pid, SIGUSR2) == -1)
+				exit(EXIT_FAILURE);
+		}
 		i++;
 		usleep(100);
-		while (!got_sig_back)
+		while (!g_got_sig_back)
 			pause();
-		got_sig_back = 0;
+		g_got_sig_back = 0;
 	}
 }
 
@@ -48,19 +54,19 @@ void	send_byte(char c, pid_t server_pid)
 	{
 		if (c & (1 << i))
 		{
-			kill(server_pid, SIGUSR1);
-			ft_printf("%d 1\n", i);
+			if (kill(server_pid, SIGUSR1) == -1)
+				exit(EXIT_FAILURE);
 		}
 		else
 		{
-			kill(server_pid, SIGUSR2);
-			ft_printf("%d 0\n", i);
+			if (kill(server_pid, SIGUSR2) == -1)
+				exit(EXIT_FAILURE);
 		}
 		i++;
 		usleep(100);
-		while (!got_sig_back)
+		while (!g_got_sig_back)
 			pause();
-		got_sig_back = 0;
+		g_got_sig_back = 0;
 	}
 }
 
@@ -72,7 +78,6 @@ void	send_bit_str(char *str, pid_t server_pid)
 	while (i < ft_strlen(str))
 	{
 		send_byte(str[i], server_pid);
-		ft_printf("\n");
 		i++;
 	}
 }
@@ -86,17 +91,22 @@ int	main(int argc, char **argv)
 	if (argc != 3)
 		exit(EXIT_FAILURE);
 	server_pid = ft_atoi(argv[1]);
-	pid_string = ft_itoa(server_pid);
+	if (server_pid <= 0)
+		exit(EXIT_FAILURE);
 	sa.sa_flags = 0;
 	sa.sa_handler = handle_signal;
 	sigemptyset(&sa.sa_mask);
 	sigaction(SIGUSR1, &sa, NULL);
-	if (ft_strncmp(pid_string, argv[1], ft_strlen(argv[1])) != 0)
+	pid_string = ft_itoa(server_pid);
+	if (!pid_string || ft_strncmp(pid_string, argv[1], ft_strlen(argv[1])) != 0)
 	{
 		free(pid_string);
 		exit(EXIT_FAILURE);
 	}
-	send_len(ft_strlen(argv[2]), server_pid);
-	send_bit_str(argv[2], server_pid);
 	free(pid_string);
+	if (ft_strlen(argv[2]))
+	{
+		send_len((unsigned int)ft_strlen(argv[2]), server_pid);
+		send_bit_str(argv[2], server_pid);
+	}
 }

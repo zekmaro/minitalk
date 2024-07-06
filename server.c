@@ -6,15 +6,15 @@
 /*   By: anarama <anarama@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 15:16:37 by anarama           #+#    #+#             */
-/*   Updated: 2024/07/05 16:15:32 by anarama          ###   ########.fr       */
+/*   Updated: 2024/07/06 14:57:12 by anarama          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-static volatile sig_atomic_t got_len_str = 0;
+t_data	g_data = {0};
 
-void	print_minitalk()
+void	print_minitalk(void)
 {
 	ft_printf("███╗░░░███╗██╗███╗░░██╗██╗████████╗░█████╗░██╗░░░░░██╗░░██╗\n");
 	ft_printf("████╗░████║██║████╗░██║██║╚══██╔══╝██╔══██╗██║░░░░░██║░██╔╝\n");
@@ -24,67 +24,75 @@ void	print_minitalk()
 	ft_printf("╚═╝░░░░░╚═╝╚═╝╚═╝░░╚══╝╚═╝░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚═╝░░╚═╝\n");
 }
 
+int	handle_content_signal(int sig, siginfo_t *info)
+{
+	if (sig == SIGUSR1)
+	{
+		g_data.current_char |= (1 << g_data.bit_count);
+	}
+	if (kill(info->si_pid, SIGUSR1) == -1)
+		return (0);
+	if (g_data.bit_count == 7)
+	{
+		g_data.bit_count = 0;
+		(g_data.str)[g_data.char_index] = g_data.current_char;
+		g_data.current_char = 0;
+		(g_data.char_index)++;
+	}
+	else
+		(g_data.bit_count)++;
+	if (g_data.char_index == g_data.str_len)
+	{
+		ft_printf("%s\n", g_data.str);
+		free(g_data.str);
+		g_data.str = NULL;
+		g_data.char_index = 0;
+		g_data.str_len = 0;
+		g_data.got_len_str = 0;
+	}
+	return (1);
+}
+
+int	handle_len_signal(int sig, siginfo_t *info)
+{
+	if (sig == SIGUSR1)
+	{
+		g_data.str_len |= (1U << g_data.bit_count);
+	}
+	if (kill(info->si_pid, SIGUSR1) == -1)
+		return (0);
+	if (g_data.bit_count == MAX_BITS - 1)
+	{
+		g_data.got_len_str = 1;
+		g_data.str = ft_calloc(g_data.str_len + 1, sizeof(char));
+		if (!g_data.str)
+			exit(EXIT_FAILURE);
+		g_data.bit_count = 0;
+	}
+	else
+	{
+		(g_data.bit_count)++;
+	}
+	return (1);
+}
+
 void	handle_signal(int sig, siginfo_t *info, void *context)
 {
-	static char	*str = NULL;
-    static char	current_char = 0;
-    static int	bit_count = 0;
-    static int	char_index = 0;
-	static int	str_len = 0;
-
 	(void) context;
-	if (!got_len_str)
+	if (!g_data.got_len_str)
 	{
-		if (sig == SIGUSR1)
+		if (!handle_len_signal(sig, info))
 		{
-			str_len |= (1 << bit_count);
-		}
-		usleep(100);
-		kill(info->si_pid, SIGUSR1);
-		if (bit_count == MAX_BITS - 1)
-		{
-			got_len_str = 1;
-			str = ft_calloc(str_len + 1, sizeof(char));
-			if (!str)
-				exit(EXIT_FAILURE);
-			bit_count = 0;
-		}
-		else
-		{
-			bit_count++;
-			return ;
+			free(g_data.str);
+			exit(EXIT_FAILURE);
 		}
 	}
 	else
 	{
-		if (sig == SIGUSR1)
+		if (!handle_content_signal(sig, info))
 		{
-			current_char |= (1 << bit_count);
-			ft_printf("%d 1\n", bit_count);
-		}
-		else {
-			ft_printf("%d 0\n", bit_count);
-		}
-		usleep(100);
-		kill(info->si_pid, SIGUSR1);
-		if (bit_count == 7)
-		{
-			bit_count = 0;
-			str[char_index] = current_char;
-			current_char = 0;
-			char_index++;
-			ft_printf("\n");
-		}
-		else
-			bit_count++;
-		if (char_index == str_len)
-		{
-			ft_printf("%s\n", str);
-			free(str);
-			str = NULL;
-			char_index = 0;
-			str_len = 0;
-			got_len_str = 0;
+			free(g_data.str);
+			exit(EXIT_FAILURE);
 		}
 	}
 }
@@ -101,7 +109,7 @@ int	main(void)
 	sa.sa_sigaction = handle_signal;
 	sigemptyset(&sa.sa_mask);
 	sigaction(SIGUSR1, &sa, NULL);
-    sigaction(SIGUSR2, &sa, NULL);
+	sigaction(SIGUSR2, &sa, NULL);
 	while (1)
 	{
 		pause();
